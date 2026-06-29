@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Tracing and Quarantine Strategy Case Study Library</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #5b6776;
+      --line: #d9e2ec;
+      --blue: #1f6f9f;
+      --blue-dark: #155b84;
+      --blue-light: #e8f4fb;
+      --shadow: 0 10px 30px rgba(31, 41, 51, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero {
+      background: linear-gradient(135deg, #0f4c81 0%, #2f75a8 55%, #63a8d5 100%);
+      color: #ffffff;
+      padding: 70px 24px 58px;
+    }
+
+    .hero-inner, main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.78rem;
+      font-weight: 700;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.1rem, 5vw, 3.85rem);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      max-width: 1000px;
+    }
+
+    .subtitle {
+      margin: 18px 0 0;
+      max-width: 880px;
+      font-size: 1.12rem;
+      opacity: 0.96;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .hero-button {
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 12px;
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.42);
+      background: rgba(255,255,255,0.15);
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-button:hover {
+      text-decoration: none;
+      background: rgba(255,255,255,0.24);
+    }
+
+    main {
+      padding: 34px 24px 70px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    h2 {
+      color: var(--blue-dark);
+      font-size: 1.65rem;
+      margin: 0 0 16px;
+      letter-spacing: -0.02em;
+    }
+
+    p { margin: 0 0 14px; }
+
+    code {
+      background: #eef4f8;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #243b53;
+    }
+
+    .callout {
+      background: #f8fbfd;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-top: 16px;
+    }
+
+    .callout strong { color: var(--blue-dark); }
+
+    .repo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .action-link {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: var(--blue-light);
+      border: 1px solid #c7e5f5;
+      font-weight: 700;
+      color: var(--blue-dark);
+      font-size: 0.92rem;
+    }
+
+    .action-link:hover {
+      text-decoration: none;
+      background: #d8eef9;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .stat {
+      background: var(--blue-light);
+      border: 1px solid #c7e5f5;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.3rem;
+      color: var(--blue-dark);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 1rem;
+      margin: 4px 0 18px;
+      outline: none;
+    }
+
+    .search-box:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(31, 111, 159, 0.12);
+    }
+
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .case-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      background: #ffffff;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .case-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(31, 41, 51, 0.10);
+    }
+
+    .case-id {
+      display: inline-block;
+      align-self: flex-start;
+      background: var(--blue-light);
+      color: var(--blue-dark);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .case-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      color: #1f2933;
+    }
+
+    .case-meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 12px;
+    }
+
+    .case-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 12px 0 14px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #405263;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: auto;
+      padding: 9px 14px;
+      border-radius: 10px;
+      background: var(--blue);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.92rem;
+      align-self: flex-start;
+    }
+
+    .button:hover {
+      background: var(--blue-dark);
+      text-decoration: none;
+    }
+
+    .planned-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .planned-card {
+      background: #f8fbfd;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      color: var(--muted);
+    }
+
+    .planned-card strong {
+      display: block;
+      color: #243b53;
+      margin-bottom: 4px;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 850px) {
+      .stats-grid, .case-grid, .planned-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .hero { padding: 42px 18px 36px; }
+      main { padding: 24px 16px 50px; }
+      section { padding: 22px 18px; }
+      .hero-actions, .repo-actions { flex-direction: column; }
+      .hero-button, .action-link { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Open evidence resource</div>
+      <h1>Contact Tracing and Quarantine Strategy Case Study Library</h1>
+      <p class="subtitle">A source-traceable case study library documenting real-world contact tracing and quarantine strategies across countries and infectious disease outbreaks.</p>
+      <div class="hero-actions">
+        <a class="hero-button" href="#cases">Browse cases</a>
+        <a class="hero-button" href="https://github.com/kayan1995/Contact-tracing-quarantine-library" target="_blank" rel="noopener">View GitHub repository</a>
+        <a class="hero-button" href="https://github.com/kayan1995/Contact-tracing-quarantine-library/issues" target="_blank" rel="noopener">Report an issue</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="about">
+      <h2>About this library</h2>
+      <p>This library compiles real-world policy examples in a structured and comparable format, including system design, implementation phases, quarantine rules, key quantitative evidence, limitations, and potential implications for infectious disease modelling.</p>
+      <p>The aim is to support policy comparison, evidence synthesis, and the development of model parameters for outbreak control strategies.</p>
+
+      <div class="stats-grid">
+        <div class="stat"><strong>2</strong><span>case studies currently available</span></div>
+        <div class="stat"><strong>2020–2022</strong><span>current documented COVID-19 period</span></div>
+        <div class="stat"><strong>Manual + digital</strong><span>tracing systems covered</span></div>
+        <div class="stat"><strong>Source-linked</strong><span>evidence and references</span></div>
+      </div>
+
+      <div class="callout">
+        <strong>Work in progress:</strong> This case study library is currently under development. If you notice incorrect information, missing context, or broken links, please contact the compiler or open an issue on GitHub.
+        <div class="repo-actions">
+          <a class="action-link" href="mailto:jxzhoufd@163.com?subject=Contact%20Tracing%20Case%20Study%20Library%20feedback">Send feedback</a>
+          <a class="action-link" href="https://github.com/kayan1995/Contact-tracing-quarantine-library/issues" target="_blank" rel="noopener">Open a GitHub issue</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="cases">
+      <h2>Available case studies</h2>
+      <input
+        class="search-box"
+        type="text"
+        id="caseSearch"
+        placeholder="Search by country, pathogen, strategy, or keyword..."
+        aria-label="Search case studies"
+      >
+
+      <div class="case-grid" id="caseGrid">
+        <article class="case-card" data-search="singapore covid-19 sars-cov-2 tracetogether digital-assisted hybrid tracing bluetooth token safeentry quarantine">
+          <span class="case-id">Case 01</span>
+          <h3>Singapore</h3>
+          <div class="case-meta">COVID-19 · SARS-CoV-2 · 2020–2022 · Digital-assisted hybrid tracing</div>
+          <p>Nationwide TraceTogether system combining Bluetooth app, physical token, SafeEntry venue logs, manual tracing, and tiered quarantine orders.</p>
+          <div class="case-tags">
+            <span class="tag">TraceTogether</span>
+            <span class="tag">Bluetooth</span>
+            <span class="tag">Token</span>
+            <span class="tag">Tiered quarantine</span>
+          </div>
+          <a class="button" href="cases/case_01_singapore.html">Open Singapore case</a>
+        </article>
+
+        <article class="case-card" data-search="england uk covid-19 sars-cov-2 nhs test and trace nhstt nhs covid-19 app manual hybrid tracing quarantine self-isolation">
+          <span class="case-id">Case 02</span>
+          <h3>England</h3>
+          <div class="case-meta">COVID-19 · SARS-CoV-2 · 2020–2022 · Manual → hybrid tracing</div>
+          <p>NHS Test and Trace manual pathway plus the decentralised NHS COVID-19 app, with different notification routes, contact pools, and legal obligations.</p>
+          <div class="case-tags">
+            <span class="tag">NHS Test and Trace</span>
+            <span class="tag">NHS COVID-19 app</span>
+            <span class="tag">Manual tracing</span>
+            <span class="tag">Advisory app notifications</span>
+          </div>
+          <a class="button" href="cases/case_02_england.html">Open England case</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="planned">
+      <h2>Planned expansion</h2>
+      <p>Future entries can be added as additional HTML pages under the <code>cases/</code> folder and linked from this homepage.</p>
+      <div class="planned-grid">
+        <div class="planned-card"><strong>Case 03</strong>Future country / region case study.</div>
+        <div class="planned-card"><strong>Case 04</strong>Future outbreak or strategy case study.</div>
+        <div class="planned-card"><strong>Data table</strong>Extracted modelling parameters and source metadata.</div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Compiled by Jiaxin Zhou, LSHTM · Contact Tracing and Quarantine Strategy Case Study Library
+    </div>
+  </main>
+
+  <script>
+    const searchInput = document.getElementById("caseSearch");
+    const cards = document.querySelectorAll(".case-card");
+
+    searchInput.addEventListener("input", function () {
+      const query = this.value.toLowerCase().trim();
+
+      cards.forEach(card => {
+        const text = card.getAttribute("data-search").toLowerCase();
+        const visible = text.includes(query) || query === "";
+        card.style.display = visible ? "flex" : "none";
+      });
+    });
+  </script>
+</body>
+</html>
